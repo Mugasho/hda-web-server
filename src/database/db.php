@@ -99,10 +99,8 @@ class db
 
         // check for successful store
         if ($result) {
-            $stmt = $this->mysqli->prepare("SELECT * FROM users WHERE email = ?");
-            $stmt->bind_param("s", $email);
-            $stmt->execute();
-            $user = $stmt->get_result()->fetch_assoc();
+            $results = $this->mysqli->query("SELECT * FROM users WHERE email ='".$email."'");
+            $user = $results->fetch_assoc();
             $stmt->close();
         }
         if (!empty($user)) {
