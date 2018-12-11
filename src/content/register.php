@@ -10,8 +10,7 @@
 <div class="p-front__content">
 
     <div class="p-signup">
-        <form class="p-signup__form" method="post" action="register.php">
-            <input hnameden name="mobile">
+        <form class="signup_form" action="register.php" method="post">
             <h2 class="p-signup__form-heading">Register for HDA</h2>
             <div class="p-signup__form-content">
                 <div class="row">

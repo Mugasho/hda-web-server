@@ -7,11 +7,13 @@
  */
 
 require '../src/page/Page.php';
+
 $register = new Page('register');
 $db=new \database\db();
 $register->setHasTitle(false);
 // json response array
 $response = array("error" => FALSE);
+$response['status']="fine";
 
 if ( isset($_POST['mobile'])) {
 
@@ -19,9 +21,10 @@ if ( isset($_POST['mobile'])) {
     if (isset($_POST['first-name']) && isset($_POST['last-name']) && isset($_POST['email']) && isset($_POST['password'])) {
 
         // receiving the post params
-        $name = $_POST['first-name']." ".$_POST['last-name'];
-        $email = $_POST['email'];
-        $password = $_POST['password'];
+        $name=$_POST['first-name']." ".$_POST['last-name'];
+        $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+        $password = filter_input(INPUT_POST, 'password', FILTER_DEFAULT);
+        $repeat=filter_input(INPUT_POST, 'repeat-password', FILTER_DEFAULT);
 
         // check if user is already existed with the same email
         if ($db->isUserExisted($email)) {
@@ -60,13 +63,16 @@ if ( isset($_POST['mobile'])) {
         $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
         $password = filter_input(INPUT_POST, 'password', FILTER_DEFAULT);
         $repeat=filter_input(INPUT_POST, 'repeat-password', FILTER_DEFAULT);
-        $db->storeUser($name, $email, $password);
-        if (!is_null($db->storeUser($name, $email, $password))) {
-            $register->setPageError(' Please login', 'User added', 'danger');
-        } else {
-            $register->setPageError(' Please retry later', 'Failed', 'danger');
+        if ($db->isUserExisted($email)) {
+            $register->setPageError(' User already exists with'.$email, 'Error', 'danger');
+        }else {
+            if (!is_null($db->storeUser($name, $email, $password))) {
+                header('Location:' . CONTENT_PATH);
+            } else {
+                $register->setPageError(' Please retry later', 'Failed', 'danger');
 
-            //header('Location:' . CONTENT_PATH);
+                //header('Location:' . CONTENT_PATH);
+            }
         }
     }
 
@@ -74,6 +80,6 @@ if ( isset($_POST['mobile'])) {
     $register->setHasMenu(false);
     $register->setHasHeader(false);
     $register->setHasBreadcrumb(false);
-$register->setPageError('Sample msg',null,'danger');
+    //$register->setPageError('Sample msg',null,'danger');
     $register->makePage();
 }
