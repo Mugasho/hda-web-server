@@ -7,7 +7,7 @@
  */
 $db=new \Hda\database\db();
 $hw=$db->getHwByID($this->getPageVars());
-
+var_dump($hw);
 ?>
 
 <div class="row">
@@ -28,7 +28,7 @@ $hw=$db->getHwByID($this->getPageVars());
                         </div>
                         <div class="form-group col-lg-6">
                             <label for="names">First Name</label>
-                            <input type="text" value="<?php echo $hw['surname']?>" class="form-control" id="first_name" name="first_name" required="required">
+                            <input type="text" value="<?php echo $hw['first_name']?>" class="form-control" id="first_name" name="first_name" required="required">
                         </div>
                         <div class="form-group col-lg-6">
                             <label for="names">Other Names</label>
@@ -56,8 +56,8 @@ $hw=$db->getHwByID($this->getPageVars());
                         </div>
                         <div class="form-group col-lg-12">
                             <label for="address">Address</label>
-                            <textarea value="<?php echo $hw['address']?>" id="address" name="address" rows="5"
-                                      class="form-control"></textarea>
+                            <textarea  id="address" name="address" rows="5"
+                                      class="form-control"><?php echo $hw['address']?></textarea>
                         </div>
                     </div>
                 </div>
@@ -98,10 +98,24 @@ $hw=$db->getHwByID($this->getPageVars());
 
                             </select>
                         </div>
+                        <div class="form-group col-lg-6">
+                            <label for="reg_date">Institution</label>
+                            <input type="text" value="<?php echo $hw['institution']?>" class="form-control" id="institution" name="institution">
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label for="status">Nationality</label>
+                            <select class="form-control" id="nationality" name="nationality"  >
+                                <option selected><?php echo $hw['nationality']?></option>
+                                <option value="">--select nationality--</option>
+                                <option>Uganda</option>
+                                <option>Kenya</option>
+
+                            </select>
+                        </div>
                         <div class="form-group col-lg-12">
                             <label for="notes">About me</label>
-                            <textarea value="<?php echo $hw['notes']?>" id="notes" name="notes" rows="5"
-                                      class="form-control"></textarea>
+                            <textarea  id="notes" name="notes" rows="5"
+                                      class="form-control"><?php echo $hw['notes']?></textarea>
                         </div>
                         <div class="form-group col-lg-12">
                             <label for="profile-pic">Profile Picture</label>

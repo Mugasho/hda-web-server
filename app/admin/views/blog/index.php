@@ -2,14 +2,13 @@
 /**
  * Created by PhpStorm.
  * User: LINCOLN
- * Date: 10/6/2018
- * Time: 3:40 PM
+ * Date: 3/7/2019
+ * Time: 12:10 PM
  */
 
-$drugs = new Hda\Page\Page('Drugs');
+$blog = new Hda\Page\Page('Blog');
 $db = new Hda\database\db();
 $db->start_session();
 $db->hasAccess($db->login_check());
-$drugs->setPageContent('drugs/drugs');
-$drugs->makePage();
-
+$blog->setPageContent('blog/blog');
+$blog->makePage();

@@ -12,5 +12,5 @@ $id = isset($match['params']['id']) ? $match['params']['id'] : null;
 $db->start_session();
 $hw->setPageContent('hw/detail');
 $hw->setPageVars($id);
-$hw->setPageVars2($db->countHw());
+$hw->setPageVars2($db->countHw(null));
 $hw->makePage();

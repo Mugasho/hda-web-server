@@ -10,7 +10,7 @@ $hw = $this->getPageVars();
 $id=$this->getPageVars2();
 $qualifications=$db->getTrainingsByID($id,1);
 $trainings=$db->getTrainingsByID($id,2);
-$positions=$db->getHwPositions($id);
+$positions=$db->getHwFacilities($id);
 ?>
 
 <div class="row">

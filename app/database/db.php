@@ -103,6 +103,28 @@ class db
                                       nationality VARCHAR(200),
                                       date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP,PRIMARY KEY(id))");
 
+        $this->mysqli->query("CREATE TABLE IF NOT EXISTS categories (id INT(11) NOT NULL AUTO_INCREMENT,
+                                      category varchar(300) NOT NULL, 
+                                      description TEXT , 
+                                      author INT(11) NOT NULL, 
+                                      date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP,PRIMARY KEY(id))");
+
+        $this->mysqli->query("CREATE TABLE IF NOT EXISTS feedback (id INT(11) NOT NULL AUTO_INCREMENT,
+                                      user_id INT(11) NOT NULL , 
+                                      title varchar(300) NOT NULL , 
+                                      sender varchar(300) NOT NULL , 
+                                      message TEXT , 
+                                      date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP,PRIMARY KEY(id))");
+
+        $this->mysqli->query("CREATE TABLE IF NOT EXISTS blog (id INT(11) NOT NULL AUTO_INCREMENT,
+                                      title varchar(300) NOT NULL, 
+                                      content TEXT NOT NULL, 
+                                      author INT(11) NOT NULL, 
+                                      status INT(11) NOT NULL DEFAULT 1,
+                                      blog_pic VARCHAR(200),
+                                      category INT(11) NOT NULL DEFAULT 0,
+                                      date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP,PRIMARY KEY(id))");
+
         $this->mysqli->query("CREATE TABLE IF NOT EXISTS members (id INT(11) NOT NULL AUTO_INCREMENT,
                                       hw_id int(11) NOT NULL,position VARCHAR(50),
                                       date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP,PRIMARY KEY(id),
@@ -414,7 +436,8 @@ class db
             $start = ' WHERE id >' . $begin;
         }
         if ($search != null) {
-            $to_search = " WHERE name_of_drug LIKE '%" . $search . "%' OR strength_of_drug LIKE '%"
+            $to_search = " WHERE name_of_drug LIKE '%"
+                . $search . "%' OR strength_of_drug LIKE '%"
                 . $search . "%' OR local_technical_representative LIKE '%"
                 . $search . "%' OR country_of_manufacture LIKE '%" . $search . "%'";
         }
@@ -482,7 +505,7 @@ class db
             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
         $stmt->bind_param("sssssssssssssssss", $hw[0], $hw[1], $hw[2],
             $hw[3], $hw[4], $hw[5], $hw[6], $hw[7], $hw[8], $hw[9], $hw[10], $hw[11],
-            $hw[12],$hw[13],$hw[14],$hw[15],$hw[16]);
+            $hw[12], $hw[13], $hw[14], $hw[15], $hw[16]);
         $result = $stmt->execute();
         $stmt->close();
 
@@ -491,13 +514,13 @@ class db
 
     public function updateHW($hw)
     {
-        $stmt = $this->mysqli->prepare("UPDATE doctors SET surname= ?,first_name= ?,other_names= ?, title = ?, phone = ?, email = ?, 
-                                              address = ?, reg_no = ?, qualification = ?, council = ?, license = ?, 
-                                              reg_date = ?, status = ?, notes = ?, profile_pic = ?,institution= ?,
-                                              nationality= ? WHERE id = $hw[13];");
+        $stmt = $this->mysqli->prepare("UPDATE doctors SET surname= ?,first_name= ?,other_names= ?, title = ?,
+                                              phone = ?, email = ?, address = ?, reg_no = ?, qualification = ?,
+                                               council = ?, license = ?, reg_date = ?, status = ?, notes = ?,
+                                                profile_pic = ?,institution= ?,nationality= ? WHERE id = $hw[17];");
         $stmt->bind_param("sssssssssssssssss", $hw[0], $hw[1], $hw[2],
-            $hw[3], $hw[4], $hw[5], $hw[6], $hw[7], $hw[8], $hw[9], $hw[10], $hw[11],$hw[12],
-            $hw[13],$hw[14],$hw[15],$hw[16]);
+            $hw[3], $hw[4], $hw[5], $hw[6], $hw[7], $hw[8], $hw[9], $hw[10], $hw[11], $hw[12],
+            $hw[13], $hw[14], $hw[15], $hw[16]);
         $result = $stmt->execute();
         $stmt->close();
 
@@ -543,12 +566,30 @@ class db
         return !is_null($hw) ? $hw : null;
     }
 
+    public function getHwByName($surname,$first_name)
+    {
+        $last_name=!empty($first_name)?"AND first_name='$first_name'":"";
+        $hw = $this->mysqli->query("SELECT * FROM doctors WHERE surname = '$surname' ".$last_name)->fetch_assoc();
+        return !is_null($hw) ? $hw : null;
+    }
+
+    public function getHwByRegNo($reg_no)
+    {$hw = $this->mysqli->query("SELECT * FROM doctors WHERE reg_no = '$reg_no'")->fetch_assoc();
+        return !is_null($hw) ? $hw : null;
+    }
+
+    public function getHwByLicense($license)
+    {
+        $hw = $this->mysqli->query("SELECT * FROM doctors WHERE license = '$license'")->fetch_assoc();
+        return !is_null($hw) ? $hw : null;
+    }
     public function getAllFacilities($limit, $begin, $search)
     {
         $start = '';
         $to_search = '';
-        if ($limit == null) {
-            $limit = 20;
+        $to_limit = '';
+        if ($limit != null) {
+            $to_limit = "  LIMIT " . $limit;
         }
         if ($begin != null) {
             $start = ' WHERE id >' . $begin;
@@ -557,7 +598,7 @@ class db
             $to_search = " WHERE facility LIKE '%" . $search . "%' OR sector LIKE '%"
                 . $search . "%' OR category LIKE '%" . $search . "%' ";
         }
-        $result = $this->mysqli->query("SELECT * FROM facilities " . $start . $to_search . "  LIMIT " . $limit);
+        $result = $this->mysqli->query("SELECT * FROM facilities " . $start . $to_search . $to_limit);
         $allFacilities = array();
         while ($facility = $result->fetch_assoc()) {
             $allFacilities[] = $facility;
@@ -593,7 +634,7 @@ class db
         $stmt = $this->mysqli->prepare("INSERT INTO trainings(hw_id, type, award,school,started,ended,notes) 
                                               VALUES (?,?,?,?,?,?,?)");
         $stmt->bind_param("iisssss", $training[0], $training[1], $training[2], $training[3],
-            $training[4],$training[5],$training[6]);
+            $training[4], $training[5], $training[6]);
         $result = $stmt->execute();
         $stmt->close();
 
@@ -606,7 +647,7 @@ class db
      * @param $type
      * @return array|null
      */
-    public function getTrainingsByID($id,$type)
+    public function getTrainingsByID($id, $type)
     {
         $stmt = $this->mysqli->query("SELECT * FROM trainings WHERE hw_id = $id AND type=$type");
         $trainings = array();
@@ -617,12 +658,16 @@ class db
     }
 
 
-    public function removeTrainingByID($id){
-        if(!empty($id)){
+    public function removeTrainingByID($id)
+    {
+        if (!empty($id)) {
             $this->mysqli->query("DELETE FROM trainings WHERE id=$id");
             return true;
-        }else{return false;}
+        } else {
+            return false;
+        }
     }
+
     /**
      * Get a Facility by id
      * @param $id
@@ -631,6 +676,12 @@ class db
     public function getFacilityByID($id)
     {
         $facility = $this->mysqli->query("SELECT * FROM facilities WHERE id = $id")->fetch_assoc();
+        return !is_null($facility) ? $facility : null;
+    }
+
+    public function getFacilityByName($facility)
+    {
+        $facility = $this->mysqli->query("SELECT * FROM facilities WHERE facility = '$facility'")->fetch_assoc();
         return !is_null($facility) ? $facility : null;
     }
 
@@ -645,8 +696,9 @@ class db
         return !is_null($allHW) ? $allHW : null;
     }
 
-    public function getHwPositions($id){
-        $stmt=$this->mysqli->query("SELECT t2.id, t1.facility,t2.position, t2.date_added FROM facilities t1 
+    public function getHwPositions($id)
+    {
+        $stmt = $this->mysqli->query("SELECT t2.id, t1.facility,t2.position, t2.date_added FROM facilities t1 
                                                 INNER JOIN facility_detail t2 ON t1.id = t2.hw_id AND t2.hw_id=$id");
         $allPositions = array();
         while ($position = $stmt->fetch_assoc()) {
@@ -654,11 +706,21 @@ class db
         }
         return !is_null($allPositions) ? $allPositions : null;
     }
-
-    public function getHwPositionCount($id){
-        $stmt=$this->mysqli->query("SELECT t2.id, t1.facility,t2.position, t2.date_added FROM facilities t1 
+    public function getHwFacilities($id)
+    {
+        $stmt = $this->mysqli->query("SELECT t2.id, t1.facility,t2.position,t1.address, t2.date_added FROM facilities t1 
+                                                INNER JOIN facility_detail t2 ON t1.id = t2.facility_id AND t2.hw_id=$id");
+        $allPositions = array();
+        while ($position = $stmt->fetch_assoc()) {
+            $allPositions[] = $position;
+        }
+        return !is_null($allPositions) ? $allPositions : null;
+    }
+    public function getHwPositionCount($id)
+    {
+        $stmt = $this->mysqli->query("SELECT t2.id, t1.facility,t2.position, t2.date_added FROM facilities t1 
                                                 INNER JOIN facility_detail t2 ON t1.id = t2.hw_id AND t2.hw_id=$id");
-        $count=0;
+        $count = 0;
         while ($stmt->fetch_assoc()) {
             $count++;
         }
@@ -690,7 +752,7 @@ class db
         return !is_null($sectionTitles) ? $sectionTitles : null;
     }
 
-    public function getSectionContentByID($id,$section)
+    public function getSectionContentByID($id, $section)
     {
         $stmt = $this->mysqli->query("SELECT * FROM section_content WHERE facility_id = $id AND section_id=$section");
         $sectionTitles = array();
@@ -703,7 +765,7 @@ class db
     public function addSubSectionTitle($section)
     {
         $stmt = $this->mysqli->prepare("INSERT INTO section_content(facility_id, section_id,sub_title,content) VALUES (?,?,?,?)");
-        $stmt->bind_param("iiss", $section[0], $section[1], $section[2],$section[3]);
+        $stmt->bind_param("iiss", $section[0], $section[1], $section[2], $section[3]);
         $result = $stmt->execute();
         $stmt->close();
 
@@ -732,6 +794,49 @@ class db
 
     }
 
+    public function getAllPosts($limit)
+    {
+        if (!is_null($limit)) {
+            $limit = "LIMIT " . $limit;
+        }else{$limit="";}
+        $stmt = $this->mysqli->query("SELECT * FROM blog ORDER BY date_added DESC " . $limit);
+        $allBlog = array();
+        while ($batch = $stmt->fetch_assoc()) {
+            $allBlog[] = $batch;
+        }
+        return !is_null($allBlog) ? $allBlog : false;
+
+    }
+
+    public function getPostByID($id)
+    {
+        $post = $this->mysqli->query("SELECT * FROM blog WHERE id = $id")->fetch_assoc();
+        return !is_null($post) ? $post : null;
+    }
+
+    public function getPostCategories($limit)
+    {
+        if (!is_null($limit)) {
+            $limit = "LIMIT " . $limit;
+        }else{$limit="";}
+        $stmt = $this->mysqli->query("SELECT * FROM categories ".$limit);
+        $allCategories = array();
+        while ($category = $stmt->fetch_assoc()) {
+            $allCategories[] = $category;
+        }
+        return !is_null($allCategories) ? $allCategories : false;
+
+    }
+
+    public function addPost($post)
+    {
+        $stmt = $this->mysqli->prepare("INSERT INTO blog(title, content,author,status,blog_pic,category,date_added) VALUES (?,?,?,?,?,?,?)");
+        $stmt->bind_param("sssssss", $post[0], $post[1], $post[2], $post[3], $post[4], $post[5],$post[6]);
+        $result = $stmt->execute();
+        $stmt->close();
+
+        return $result ? true : false;
+    }
 
     public function addBatchNo($batch)
     {
@@ -758,9 +863,16 @@ class db
         return !is_null($id) ? $id : null;
     }
 
-    function countDrugs()
+    function countDrugs($search)
     {
-        $stmt = $this->mysqli->prepare("SELECT * FROM drugs");
+        $to_search ='';
+        if ($search != null) {
+            $to_search = " WHERE name_of_drug LIKE '%"
+                . $search . "%' OR strength_of_drug LIKE '%"
+                . $search . "%' OR local_technical_representative LIKE '%"
+                . $search . "%' OR country_of_manufacture LIKE '%" . $search . "%'";
+        }
+        $stmt = $this->mysqli->prepare("SELECT * FROM drugs".$to_search);
         $stmt->execute();
         $stmt->store_result();
         return $stmt->num_rows;
@@ -774,14 +886,37 @@ class db
         return $stmt->num_rows;
     }
 
-    function countHw()
+    function countHw($search)
     {
-        $stmt = $this->mysqli->prepare("SELECT id FROM doctors");
+        $to_search='';
+        if ($search != null) {
+            $to_search = " WHERE surname LIKE '%"
+                . $search . "%' OR first_name LIKE '%"
+                . $search . "%' OR email LIKE '%"
+                . $search . "%' OR phone LIKE '%"
+                . $search . "%' OR council LIKE '%"
+                . $search . "%' OR reg_no LIKE '%" . $search . "%'";
+        }
+        $stmt = $this->mysqli->prepare("SELECT id FROM doctors".$to_search);
         $stmt->execute();
         $stmt->store_result();
         return $stmt->num_rows;
     }
 
+    /**
+     * Returns distinct items from a table column
+     * @param $field
+     * @param $table
+     * @return array|bool
+     */
+    function select_distinct($field, $table){
+        $stmt = $this->mysqli->query("SELECT DISTINCT ".$field." FROM ".$table);
+        $distinct_items = array();
+        while ($distinct = $stmt->fetch_assoc()) {
+            $distinct_items[] = $distinct;
+        }
+        return !is_null($distinct_items) ? $distinct_items : false;
+    }
     /**
      * Reduce word length
      * @param $text
@@ -817,7 +952,8 @@ class db
      * @param $oldDate
      * @return string
      */
-    function time_ago($date,$oldDate) {
+    function time_ago($date, $oldDate)
+    {
         $time_ago = '';
 
         $diff = $date->diff($oldDate);
@@ -833,6 +969,16 @@ class db
             $time_ago = 'minutes';
 
         return $time_ago . ' ago ';
+    }
+
+    function respond($item,$type,$response){
+        if(!is_null($item)) {
+            $response[$type] = $item;
+        } else {
+            $response['error'] = TRUE;
+            $response['error_msg'] = 'Not found';
+        }
+        echo json_encode($response);
     }
 
     function registerMobile($phone)
@@ -862,7 +1008,7 @@ class db
                 echo json_encode($response);
             } else {
                 // create a new user
-                $user = $this->storeUser($name, $email, $phone,$password);
+                $user = $this->storeUser($name, $email, $phone, $password);
                 if ($user) {
                     // user stored successfully
                     $response["error"] = FALSE;

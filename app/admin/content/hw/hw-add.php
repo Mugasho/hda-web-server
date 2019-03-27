@@ -86,6 +86,19 @@
 
                             </select>
                         </div>
+                        <div class="form-group col-lg-6">
+                            <label for="reg_date">Institution</label>
+                            <input type="text"  class="form-control" id="institution" name="institution">
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label for="status">Nationality</label>
+                            <select class="form-control" id="nationality" name="nationality"  >
+                                <option value="">--select nationality--</option>
+                                <option>Uganda</option>
+                                <option>Kenya</option>
+
+                            </select>
+                        </div>
                         <div class="form-group col-lg-12">
                             <label for="notes">Notes</label>
                             <textarea id="notes" name="notes" rows="5"

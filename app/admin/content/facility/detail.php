@@ -150,7 +150,10 @@ function getColor($reason)
                             $status = !is_null($hw['status']) ? $hw['status'] : 'Active';
                             echo '<tr>
                         <td>
-                            ' . $hw['names'] . '
+                            ' . $hw['surname'] . '
+                        </td>
+                        <td>
+                            ' . $hw['first_name'] . '
                         </td>
                         <td>
                             ' . $hw['position'] . '
@@ -281,10 +284,11 @@ function getColor($reason)
                     '\n' +
                     '                                        <tbody>\n' +
                     '                                            <tr>\n' +
-                    '                                                <td>' + myArr["id"] + '</td>\n' +
-                    '                                                <td>' + myArr["name"] + '</td>\n' +
+                    '                                                <td>' + myArr["hw"]["id"] + '</td>\n' +
+                    '                                                <td>' + myArr["hw"]["surname"] + '</td>\n' +
+                    '                                                <td>' + myArr["hw"]["first_name"] + '</td>\n' +
                     '                                                <td class="text-nowrap">\n' +
-                    '                                                    <a href="<?php echo BASE_PATH?>hw/detail/' + myArr["id"] + '/" class="btn btn-primary btn-sm"> <i class="fa fa-search text-white"></i> </a>\n' +
+                    '                                                    <a href="<?php echo BASE_PATH?>hw/detail/' + myArr["hw"]["id"] + '/" class="btn btn-primary btn-sm"> <i class="fa fa-search text-white"></i> </a>\n' +
                     '                                                    <button type="submit" class="btn btn-danger btn-sm waves-effect waves-light"><i class="fa fa-plus text-white"></i></button>\n' +
                     '                                                </td>\n' +
                     '                                            </tr>\n' +
@@ -292,13 +296,13 @@ function getColor($reason)
                     '                                              \n' +
                     '                                        </tbody>\n' +
                     '                                    </table>';
-                document.getElementById("hw-id").value = myArr['id'];
+                document.getElementById("hw-id").value = myArr["hw"]['id'];
                 document.getElementById("fc-id").value =<?php echo $facility['id'] ?>;
                 document.getElementById("hw-table").innerHTML = myArr['error'] === false ? tbl : "Not found";
 
             }
         };
-        xmlhttp.open("GET", "<?php echo BASE_PATH?>facility/api/hw/" + str + "/", true);
+        xmlhttp.open("GET", "<?php echo BASE_PATH?>hw/api/byID/" + str + "/", true);
         xmlhttp.send();
     }
     function setSection(id){

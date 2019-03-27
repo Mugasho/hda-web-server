@@ -59,10 +59,9 @@ class FrontPage extends Master
             'Add new' => 'facility/add/',
             'Facilities' => 'facility/'
         ));
-        $this->addMenu('Health Workers', 'hw/', 'mdi mdi-account-multiple', array(
-            'Add new' => 'hw/add/',
-            'Health Workers' => 'hw/'
-        ));
+        $this->addMenu('Health Workers', 'hw/', null, null);
+
+        $this->addMenu('Blog','blog/',null,null);
 
 
         $this->setCopyright('Copyright © 2018 HDA All rights reserved.');
@@ -117,7 +116,7 @@ class FrontPage extends Master
                </div>';*/
         echo '<div class="theme-layout" id="scrollup">';
         $this->isHasMenu() ? require 'responsive-header.php' : null;
-        $this->isHome() ? null : require 'page-header.php';
+        require 'page-header.php';
         $this->getFrontContent($this->getPageContent() . '.php');
         require 'front-footer.php';
         echo '</div>';

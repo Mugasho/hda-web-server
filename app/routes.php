@@ -31,13 +31,18 @@ $router->map('GET','/admin/users/', 'admin/views/users/index.php', 'users');
 $router->map('GET|POST','/admin/register/', 'admin/views/users/register.php', 'register');
 $router->map('POST','/admin/users/api/[*:action]/', 'admin/views/users/api.php', 'userAPI');
 $router->map('GET|POST','/admin/login/', 'admin/views/login.php', 'login');
+$router->map('GET|POST','/blog/', 'public/views/blog/index.php', 'blog');
+$router->map('GET|POST','/blog/[*:id]/', 'public/views/blog/detail.php', 'blog-detail');
+$router->map('GET|POST','/admin/blog/', 'admin/views/blog/index.php', 'blog-admin');
+$router->map('GET|POST','/admin/blog/add/', 'admin/views/blog/add.php', 'blog-add');
 
 // Special (payments, ajax processing, etc)
 $router->map('GET','/charge/[*:customer_id]/','charge.php','charge');
 $router->map('GET','/pay/[*:status]/','payment_results.php','payment-results');
 
 // API Routes
-$router->map('GET','/facility/api/[*:key]/[*:id]/', 'admin/views/facility/api.php', 'api');
+$router->map('GET','/facility/api/[*:key]/[*:id]/', 'admin/views/facility/api.php', 'facility-api');
+$router->map('GET','/hw/api/[*:key]/[*:id]/', 'admin/views/hw/api.php', 'hw-api');
 $router->map('GET','/drugs/api/[*:key]/[*:id]/', 'admin/views/drugs/api.php', 'drugs-api');
 $router->map('GET','/admin/drugs/api/[*:key]/[*:id]/', 'admin/views/drugs/api.php', 'drugs-limit');
 

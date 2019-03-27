@@ -16,7 +16,7 @@ $section1=isset($_GET['category'])?'open':'closed';
 $section2=isset($_GET['sector'])?'open':'closed';
 
 function radio_on($value1,$value2){
-    echo $value1==$value2?'on':'off';
+    echo $value1==$value2?'checked':'';
 }
 ?>
 
@@ -47,26 +47,37 @@ function radio_on($value1,$value2){
                                 <i class="la la-search"></i>
                             </div><!-- Search Widget -->
                             <div class="field_w_search">
-                                <input type="text" placeholder="All Locations" value="<?php echo $location;?>" id="location" name="location" onkeyup="search_input('location',this.value)"/>
+                                <input type="text" placeholder="All Districts" value="<?php echo $location;?>" id="location" name="location" onkeyup="search_input('location',this.value)"/>
                                 <i class="la la-map-marker"></i>
                             </div><!-- Search Widget -->
                         </div>
                     </div>
                     <div class="widget border">
                         <h3 class="sb-title <?php echo $section1;?>">Sector</h3>
-                        <div class="posted_widget" style="">
-                            <input type="radio" name="sector" value="<?php radio_on($sector,'private')?>" id="sector1"><label for="sector1" onclick="search_page('sector','private')">Private</label><br>
-                            <input type="radio" name="sector" value="<?php radio_on($sector,'govt')?>" id="sector2"><label for="sector2" onclick="search_page('sector','govt')">Govt</label><br>
-                            <input type="radio" name="sector" value="<?php radio_on($sector,'pnfp')?>" id="sector3"><label for="sector3" onclick="search_page('sector','pnfp')">PNFP</label><br>
-                            <input type="radio" name="sector" value="<?php radio_on($sector,'all')?>" id="sector4"><label for="sector4" onclick="search_page('sector','all')">All</label><br>
+                        <div class="posted_widget" style=""><?php
+                            $sectorItems=$db->select_distinct('sector','facilities');
+                            $items=1;
+                            foreach ($sectorItems as $sectorItem){
+                                echo '<input type="radio" name="sector" id="sector'.$items.'" ';
+                                radio_on($sector,$sectorItem['sector']);
+                                echo '><label for="sector'.$items.'" onclick="search_page(\'sector\',\''.$sectorItem['sector'].'\')">'.$sectorItem['sector'].'</label><br>';
+                                $items++;
+                            }
+                            ?>
                         </div>
                     </div>
                     <div class="widget border">
                         <h3 class="sb-title <?php echo $section2;?>">Category</h3>
-                        <div class="posted_widget" style="">
-                            <input type="radio" name="category" id="category1"><label for="category1" onclick="search_page('category','clinic')">Private</label><br>
-                            <input type="radio" name="category" id="category2"><label for="category2" onclick="search_page('category','hospital')">Govt</label><br>
-                            <input type="radio" name="category" id="category4"><label for="category4" onclick="search_page('category','all')">All</label><br>
+                        <div class="posted_widget" style=""><?php
+                            $CategoryItems=$db->select_distinct('category','facilities');
+                            $items=1;
+                            foreach ($CategoryItems as $categoryItem){
+                                echo '<input type="radio" name="sector" id="sector'.$items.'" ';
+                                radio_on($category,$categoryItem['sector']);
+                                echo '><label for="sector'.$items.'" onclick="search_page(\'sector\',\''.$categoryItem['category'].'\')">'.$categoryItem['sector'].'</label><br>';
+                                $items++;
+                            }
+                            ?>
                         </div>
                     </div>
                 </aside>
@@ -83,21 +94,22 @@ function radio_on($value1,$value2){
                             </select>
                         </div>
                     </div>
-                    <div class="emply-list-sec">
-                        <div class="row" id="masonry"><?php
-                            foreach ($facilities as $facility){
-                                echo '<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                                <div class="emply-list box">
-                                    <div class="emply-list-thumb">
-                                        <a href="'.BASE_PATH.'facility/detail/'.$facility['id'].'/" title=""><img src="'.VENDOR.'hunt/images/resource/first-aid-kit.png" width="40px" alt="" /></a>
-                                    </div>
-                                    <div class="emply-list-info">
-                                        <div class="emply-pstn">'.$facility['sector'].'</div>
-                                        <h3><a href="'.BASE_PATH.'facility/detail/'.$facility['id'].'/" title="">'.$facility['facility'].'</a></h3>
-                                        <span>'.$facility['category'].'</span>
-                                        <h6><i class="la la-map-marker"></i> '.$facility['address'].'</h6>
-                                    </div>
-                                </div><!-- Employe List -->
+                    <div class="job-list-modern">
+                        <div class="job-listings-sec"><?php
+                            foreach ($facilities as $facility) {
+                                $profile_pic = VENDOR . 'hunt/images/resource/browser.png';
+                                echo '<div class="job-listing wtabs">
+                                <div class="job-title-sec">
+                                    <div class="c-logo"> <img src="' . $profile_pic . '" width="60px" alt="" /> </div>
+                                    <h3><a href="detail/' . $facility['id'] . '/" title="">' . $facility['facility']. '</a></h3>
+                                    <span>' . $facility['category'] . '</span>
+                                    <div class="job-lctn"><i class="la la-map-marker"></i>' . $facility['address'] . '</div>
+                                </div>
+                                <div class="job-style-bx">
+                                    <span class="job-is ft">' . $facility['sector'] . '</span>
+                                    <span class="fav-job"><i class="la la-heart-o"></i></span>
+                                    <i>' . $db->time_ago(new DateTime($facility['created_at']), new DateTime('now')) . '</i>
+                                </div>
                             </div>';
                             }
                             ?>

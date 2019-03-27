@@ -51,9 +51,9 @@ class Page extends Master
             'Add new'=>'hw/add/',
             'Health Workers'=>'hw/'
         ));
-        $this->addMenu('Posts', 'post/', 'mdi mdi-book', array(
-            'Add new'=>'post/add/',
-            'Posts'=>'post/'
+        $this->addMenu('Blog', 'post/', 'mdi mdi-book', array(
+            'Add new'=>'blog/add/',
+            'Blog'=>'blog/'
         ));
         $this->addMenu('Users', 'users/', 'mdi mdi-account', null);
         $this->addMenu('Login', 'login/', 'mdi mdi-lock', null);
