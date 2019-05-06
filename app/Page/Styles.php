@@ -11,3 +11,4 @@ $this->addStyle('style.css', VENDOR.'theme/css/');
 $this->addStyle('blue.css', VENDOR.'theme/css/colors/');
 $this->addStyle('fontawesome-all.min.css', VENDOR.'font-awesome-5/css/');
 $this->addStyle('toastr.min.css', VENDOR.'toastr/');
+$this->addStyle('editor.css', VENDOR.'tinymce/');

@@ -78,9 +78,9 @@ if (!is_null($pages)) {
                         </td>
                         <td>
                         <div class="btn-group">
-                                            <a href="detail/' . $hw['id'] . '/" class="btn btn-info btn-sm">
+                                            <a href="'.ADMIN_PATH.'hw/detail/' . $hw['id'] . '/" class="btn btn-info btn-sm">
                                             <i class="fa fa-search"></i></a>
-                                            <a href="detail/' . $hw['id'] . '/" class="btn btn-warning btn-sm">
+                                            <a  onclick="search_page(\'r\','.$hw['id'].')" class="btn btn-warning btn-sm text-white">
                                             <i class="fa fa-minus-circle"></i></a>
                                             </div>
                          </td>

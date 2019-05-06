@@ -44,7 +44,7 @@ if (isset($_POST['surname'],$_POST['first_name'],$_POST['other_names'], $_POST['
     $hwEdit->setPageError(' hw not saved', 'Error', 'warning');
 }
 $db->start_session();
-$db->hasAccess($db->login_check());
+$db->hasAccess();
 $hwEdit->addStyle('dropify.min.css', VENDOR . 'dropify/dist/css/');
 $hwEdit->addScripts('dropify.min.js', VENDOR . 'dropify/dist/js/');
 $hwEdit->addScripts('dropify.js', VENDOR . 'theme/js/');

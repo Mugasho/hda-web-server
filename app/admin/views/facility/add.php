@@ -24,6 +24,6 @@ if (isset($_POST['facility'], $_POST['license'], $_POST['category'], $_POST['sec
     $db->addFacility($facility) ? header('Location:' . ADMIN_PATH . 'facility/') : $facilityAdd->setPageError(' Facility not saved', 'Error', 'warning');
 }
 $db->start_session();
-$db->hasAccess($db->login_check());
+$db->hasAccess();
 $facilityAdd->setPageContent('facility/facility-add');
 $facilityAdd->makePage();

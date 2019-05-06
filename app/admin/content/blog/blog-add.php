@@ -93,3 +93,8 @@ $categories=$db->getPostCategories(null);
         </div>
     </div>
 </div>
+<script>
+    tinymce.init({
+        selector: '#content'
+    });
+</script>

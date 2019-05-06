@@ -27,7 +27,7 @@ if (isset($_POST['dom'], $_POST['expiry'], $_POST['batch-no'])) {
 $drug_detail->setPageVars($db->getDrugByID($id));
 $drug_detail->setPageVars2($db->getAllBatch(100, $id, null));
 $db->start_session();
-$db->hasAccess($db->login_check());
+$db->hasAccess();
 $drug_detail->setPageContent('drugs/detail');
 //$drug_detail->setPageError('Sample msg',null,'danger');
 $drug_detail->makePage();

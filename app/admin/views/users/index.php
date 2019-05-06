@@ -11,7 +11,7 @@ $users = new Hda\Page\Page('Users');
 
 $db = new Hda\database\db();
 $db->start_session();
-$db->hasAccess($db->login_check());
+$db->hasAccess();
 $users->setPageContent('users/users');
 $all_users = $db->getAllUsers();
 //$users->setPageError('Sample msg',null,'danger');

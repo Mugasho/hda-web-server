@@ -11,6 +11,7 @@ $db = new Hda\database\db();
 $response = array("error" => FALSE);
 $key = $match['params']['key'];
 $id = $match['params']['id'];
+echo 'here';
 switch ($key) {
     case 'byID':
         $facility = $db->getFacilityByID($id);

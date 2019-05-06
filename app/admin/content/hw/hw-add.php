@@ -21,8 +21,16 @@
                     <div class="row">
 
                         <div class="form-group col-lg-6">
-                            <label for="names">Names</label>
-                            <input type="text" class="form-control" id="names" name="names" required="required">
+                            <label for="surname">Surname</label>
+                            <input type="text" class="form-control" id="surname" name="surname" required="required">
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label for="names">First Name</label>
+                            <input type="text" class="form-control" id="first_name" name="first_name">
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label for="names">Other Names</label>
+                            <input type="text" class="form-control" id="other_names" name="other_names">
                         </div>
                         <div class="form-group col-lg-6">
                             <label for="title">Title</label>

@@ -35,6 +35,7 @@ class Page extends Master
         $this->addStyle('select2.min.css', CONTENT_PATH . 'vendor/select2/');
         $this->addStyle('datatables.min.css', CONTENT_PATH . 'vendor/datatables/');
 
+
         require 'Styles.php';
         require 'scripts.php';
 
@@ -53,7 +54,8 @@ class Page extends Master
         ));
         $this->addMenu('Blog', 'post/', 'mdi mdi-book', array(
             'Add new'=>'blog/add/',
-            'Blog'=>'blog/'
+            'Blog'=>'blog/',
+            'Categories'=>'blog/categories/'
         ));
         $this->addMenu('Users', 'users/', 'mdi mdi-account', null);
         $this->addMenu('Login', 'login/', 'mdi mdi-lock', null);

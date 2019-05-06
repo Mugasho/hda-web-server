@@ -10,6 +10,6 @@ $hospital = new Hda\Page\Page('Facilities');
 
 $db = new Hda\database\db();
 $db->start_session();
-$db->hasAccess($db->login_check());
+$db->hasAccess();
 $hospital->setPageContent('facility/facility');
 $hospital->makePage();

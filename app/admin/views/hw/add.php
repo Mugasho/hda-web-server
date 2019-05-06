@@ -12,6 +12,7 @@ $db = new Hda\database\db();
 if (isset($_POST['surname'],$_POST['first_name'],$_POST['other_names'], $_POST['title'], $_POST['phone'], $_POST['email'], $_POST['address'], $_POST['reg_no'],
     $_POST['qualification'], $_POST['council'], $_POST['license'], $_POST['reg_date'], $_POST['status'], $_POST['notes'],
     $_POST['institution'],$_POST['nationality'])) {
+
     $hw[0] = $_POST['surname'];
     $hw[1] = $_POST['first_name'];
     $hw[2] = $_POST['other_names'];
@@ -36,7 +37,7 @@ if (isset($_POST['surname'],$_POST['first_name'],$_POST['other_names'], $_POST['
     $db->addhW($hw) ? header('Location:' . ADMIN_PATH . 'hw/') : $hwAdd->setPageError(' hw not saved', 'Error', 'warning');
 }
 $db->start_session();
-$db->hasAccess($db->login_check());
+$db->hasAccess();
 $hwAdd->addStyle('dropify.min.css', VENDOR . 'dropify/dist/css/');
 $hwAdd->addScripts('dropify.min.js', VENDOR . 'dropify/dist/js/');
 $hwAdd->addScripts('dropify.js', VENDOR . 'theme/js/');

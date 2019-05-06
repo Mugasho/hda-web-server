@@ -45,7 +45,7 @@ if(isset($_POST['subsection-title'],$_POST['subsection-content'])){
 $facility_detail->setPageVars($db->getFacilityByID($id));
 $facility_detail->setPageVars2($db->getFacilityHw($id));
 $db->start_session();
-$db->hasAccess($db->login_check());
+$db->hasAccess();
 
 $facility_detail->setPageContent('facility/detail');
 $facility_detail->makePage();

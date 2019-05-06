@@ -12,28 +12,29 @@ $Posts = array();
 $default=30;
 $limit=isset($_GET['limit'])?$_GET['limit']:30;
 $Posts = $db->getAllPosts($limit);
+if(isset($_GET['category'])){
+    $category=$db->getPostCategoryByID($_GET['category']);
+}
 ?>
 
 <div class="col-12">
     <div class="card">
         <div class="card-body">
-            <h4 class="card-title">Search Result For "Angular Js"</h4>
-            <h6 class="card-subtitle">About 14,700 result ( 0.10 seconds)</h6>
+            <h4 class="card-title">Blog posts</h4>
             <ul class="search-listing"><?php
                 foreach ($Posts as $post){
                     echo '<li>
-                    <h3><a href="javacript:void(0)">'.$post['title'].'</a></h3>
-                    <a href="'.ADMIN_PATH.'blog/'.$post['id'].'" class="search-links">'.ADMIN_PATH.'blog/'.$post['id'].'/</a>
-                    <p>'.$post['content'].'</p>
+                    <h3><a href="'.ADMIN_PATH.'blog/'.$post['id'].'/">'.$post['title'].'</a></h3>
+                    <a href="'.ADMIN_PATH.'blog/'.$post['id'].'" class="search-links ">'.ADMIN_PATH.'blog/'.$post['id'].'/</a>
+                    <p>'.$post['content'].'
+                    
+                    <a  href="'.ADMIN_PATH.'blog/view/'.$post['id'].'/" target="_blank" > <i class="fa fa-eye"></i> View</a>
+                    <a  href="'.ADMIN_PATH.'blog/edit/'.$post['id'].'/" > <i class="fa fa-pencil"></i> Edit</a>
+                    <a  href="'.ADMIN_PATH.'blog/?r='.$post['id'].'" > <i class="fa fa-trash"></i> Delete</a>
+                    </p>
                 </li>';
                 }
                 ?>
-                <li>
-                    <h3><a href="javacript:void(0)">AngularJs</a></h3>
-                    <a href="javascript:void(0)" class="search-links">http://www.google.com/angularjs</a>
-                    <p>Lorem Ipsum viveremus probamus opus apeirian haec perveniri, memoriter.Praebeat pecunias viveremus probamus opus apeirian haec perveniri, memoriter.</p>
-                </li>
-
             </ul>
             <nav aria-label="Page navigation example" class="m-t-40">
                 <ul class="pagination">

@@ -162,6 +162,16 @@ class db
                                         notes VARCHAR(500),
                                         date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                                         FOREIGN KEY (hw_id) REFERENCES doctors(id) )");
+
+        $this->mysqli->query("CREATE TABLE IF NOT EXISTS comments (
+                                        id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                                        comment_post_ID bigint(20) UNSIGNED NOT NULL DEFAULT '0',
+                                        comment_author tinytext COLLATE utf8mb4_unicode_ci NOT NULL,
+                                        comment_date datetime NOT NULL DEFAULT NOW(),
+                                        comment_content text COLLATE utf8mb4_unicode_ci NOT NULL,
+                                        comment_approved varchar(20) NOT NULL DEFAULT '1',
+                                        comment_type varchar(20) NOT NULL DEFAULT '',
+                                        user_id int(20) NOT NULL DEFAULT '0')");
     }
 
     /**
@@ -362,7 +372,7 @@ class db
                                       FROM users 
                                       WHERE unique_id = ? LIMIT 1")) {
                 // Bind "$user_id" to parameter.
-                $stmt->bind_param('i', $user_id);
+                $stmt->bind_param('s', $user_id);
                 $stmt->execute();   // Execute the prepared query.
                 $stmt->store_result();
 
@@ -396,10 +406,10 @@ class db
         }
     }
 
-    public function hasAccess($login)
+    public function hasAccess()
     {
-        if (!$login == true) {
-            header('Location:' . ADMIN_PATH . 'login/?return=' . ROUTE);
+        if (!$this->login_check()) {
+            header('Location:' . ADMIN_PATH . 'login/');
         }
     }
 
@@ -415,6 +425,12 @@ class db
             $allUsers[] = $user;
         }
         return !is_null($allUsers) ? $allUsers : false;
+    }
+
+    public function getUserByUID($uid)
+    {
+        $user = $this->mysqli->query("SELECT * FROM users WHERE unique_id = '$uid'")->fetch_assoc();
+        return !is_null($user) ? $user : null;
     }
 
     /**
@@ -566,15 +582,16 @@ class db
         return !is_null($hw) ? $hw : null;
     }
 
-    public function getHwByName($surname,$first_name)
+    public function getHwByName($surname, $first_name)
     {
-        $last_name=!empty($first_name)?"AND first_name='$first_name'":"";
-        $hw = $this->mysqli->query("SELECT * FROM doctors WHERE surname = '$surname' ".$last_name)->fetch_assoc();
+        $last_name = !empty($first_name) ? "AND first_name='$first_name'" : "";
+        $hw = $this->mysqli->query("SELECT * FROM doctors WHERE surname = '$surname' " . $last_name)->fetch_assoc();
         return !is_null($hw) ? $hw : null;
     }
 
     public function getHwByRegNo($reg_no)
-    {$hw = $this->mysqli->query("SELECT * FROM doctors WHERE reg_no = '$reg_no'")->fetch_assoc();
+    {
+        $hw = $this->mysqli->query("SELECT * FROM doctors WHERE reg_no = '$reg_no'")->fetch_assoc();
         return !is_null($hw) ? $hw : null;
     }
 
@@ -583,6 +600,7 @@ class db
         $hw = $this->mysqli->query("SELECT * FROM doctors WHERE license = '$license'")->fetch_assoc();
         return !is_null($hw) ? $hw : null;
     }
+
     public function getAllFacilities($limit, $begin, $search)
     {
         $start = '';
@@ -706,6 +724,7 @@ class db
         }
         return !is_null($allPositions) ? $allPositions : null;
     }
+
     public function getHwFacilities($id)
     {
         $stmt = $this->mysqli->query("SELECT t2.id, t1.facility,t2.position,t1.address, t2.date_added FROM facilities t1 
@@ -716,6 +735,7 @@ class db
         }
         return !is_null($allPositions) ? $allPositions : null;
     }
+
     public function getHwPositionCount($id)
     {
         $stmt = $this->mysqli->query("SELECT t2.id, t1.facility,t2.position, t2.date_added FROM facilities t1 
@@ -798,7 +818,9 @@ class db
     {
         if (!is_null($limit)) {
             $limit = "LIMIT " . $limit;
-        }else{$limit="";}
+        } else {
+            $limit = "";
+        }
         $stmt = $this->mysqli->query("SELECT * FROM blog ORDER BY date_added DESC " . $limit);
         $allBlog = array();
         while ($batch = $stmt->fetch_assoc()) {
@@ -814,12 +836,33 @@ class db
         return !is_null($post) ? $post : null;
     }
 
+    public function deletePostByID($id)
+    {
+        return $this->mysqli->query("DELETE FROM blog WHERE id ='$id'") ? true : false;
+    }
+    public function deleteHWByID($id)
+    {
+        $this->mysqli->query("DELETE FROM facility_detail WHERE hw_id ='$id'");
+        return $this->mysqli->query("DELETE FROM doctors WHERE id ='$id'") ? true : false;
+    }
+    public function addPostCategory($category)
+    {
+        $stmt = $this->mysqli->prepare("INSERT INTO categories(category, description,author) VALUES (?,?,?)");
+        $stmt->bind_param("sss", $category[0], $category[1], $category[2]);
+        $result = $stmt->execute();
+        $stmt->close();
+
+        return $result ? true : false;
+    }
+
     public function getPostCategories($limit)
     {
         if (!is_null($limit)) {
             $limit = "LIMIT " . $limit;
-        }else{$limit="";}
-        $stmt = $this->mysqli->query("SELECT * FROM categories ".$limit);
+        } else {
+            $limit = "";
+        }
+        $stmt = $this->mysqli->query("SELECT * FROM categories " . $limit);
         $allCategories = array();
         while ($category = $stmt->fetch_assoc()) {
             $allCategories[] = $category;
@@ -828,10 +871,43 @@ class db
 
     }
 
+    public function getPostCategoryByID($id)
+    {
+        $post = $this->mysqli->query("SELECT * FROM categories WHERE id = $id")->fetch_assoc();
+        return !is_null($post) ? $post : null;
+    }
+
     public function addPost($post)
     {
         $stmt = $this->mysqli->prepare("INSERT INTO blog(title, content,author,status,blog_pic,category,date_added) VALUES (?,?,?,?,?,?,?)");
-        $stmt->bind_param("sssssss", $post[0], $post[1], $post[2], $post[3], $post[4], $post[5],$post[6]);
+        $stmt->bind_param("sssssss", $post[0], $post[1], $post[2], $post[3], $post[4], $post[5], $post[6]);
+        $result = $stmt->execute();
+        $stmt->close();
+
+        return $result ? true : false;
+    }
+
+    public function getAllComments($limit)
+    {
+        if (!is_null($limit)) {
+            $limit = "LIMIT " . $limit;
+        } else {
+            $limit = "";
+        }
+        $stmt = $this->mysqli->query("SELECT * FROM comments " . $limit);
+        $comments = array();
+        while ($comment = $stmt->fetch_assoc()) {
+            $comments[] = $comment;
+        }
+        return !is_null($comments) ? $comments : false;
+
+    }
+
+
+    public function addComment($comment)
+    {
+        $stmt = $this->mysqli->prepare("INSERT INTO comments(comment_post_ID, comment_author,comment_date,comment_content,comment_approved,comment_type,user_id) VALUES (?,?,?,?,?,?,?)");
+        $stmt->bind_param("sssssss", $comment[0], $comment[1], $comment[2], $comment[3], $comment[4], $comment[5], $comment[6]);
         $result = $stmt->execute();
         $stmt->close();
 
@@ -865,22 +941,29 @@ class db
 
     function countDrugs($search)
     {
-        $to_search ='';
+        $to_search = '';
         if ($search != null) {
             $to_search = " WHERE name_of_drug LIKE '%"
                 . $search . "%' OR strength_of_drug LIKE '%"
                 . $search . "%' OR local_technical_representative LIKE '%"
                 . $search . "%' OR country_of_manufacture LIKE '%" . $search . "%'";
         }
-        $stmt = $this->mysqli->prepare("SELECT * FROM drugs".$to_search);
+        $stmt = $this->mysqli->prepare("SELECT * FROM drugs" . $to_search);
         $stmt->execute();
         $stmt->store_result();
         return $stmt->num_rows;
     }
 
-    function countFacility()
+    function countFacility($search)
     {
-        $stmt = $this->mysqli->prepare("SELECT * FROM facilities");
+        $to_search = '';
+        if ($search != null) {
+            $to_search = " WHERE facility '%"
+                . $search . "%' OR sector LIKE '%"
+                . $search . "%' OR category LIKE '%"
+                . $search . "%'";
+        }
+        $stmt = $this->mysqli->prepare("SELECT * FROM facilities ".$to_search);
         $stmt->execute();
         $stmt->store_result();
         return $stmt->num_rows;
@@ -888,7 +971,7 @@ class db
 
     function countHw($search)
     {
-        $to_search='';
+        $to_search = '';
         if ($search != null) {
             $to_search = " WHERE surname LIKE '%"
                 . $search . "%' OR first_name LIKE '%"
@@ -897,7 +980,7 @@ class db
                 . $search . "%' OR council LIKE '%"
                 . $search . "%' OR reg_no LIKE '%" . $search . "%'";
         }
-        $stmt = $this->mysqli->prepare("SELECT id FROM doctors".$to_search);
+        $stmt = $this->mysqli->prepare("SELECT id FROM doctors" . $to_search);
         $stmt->execute();
         $stmt->store_result();
         return $stmt->num_rows;
@@ -909,14 +992,16 @@ class db
      * @param $table
      * @return array|bool
      */
-    function select_distinct($field, $table){
-        $stmt = $this->mysqli->query("SELECT DISTINCT ".$field." FROM ".$table);
+    function select_distinct($field, $table)
+    {
+        $stmt = $this->mysqli->query("SELECT DISTINCT " . $field . " FROM " . $table);
         $distinct_items = array();
         while ($distinct = $stmt->fetch_assoc()) {
             $distinct_items[] = $distinct;
         }
         return !is_null($distinct_items) ? $distinct_items : false;
     }
+
     /**
      * Reduce word length
      * @param $text
@@ -926,22 +1011,25 @@ class db
      */
     function limitChars($text, $maxchar, $end = '...')
     {
-        if (strlen($text) > $maxchar || $text == '') {
-            $words = preg_split('/\s/', $text);
-            $output = '';
-            $i = 0;
-            while (1) {
-                $length = strlen($output) + strlen($words[$i]);
-                if ($length > $maxchar) {
-                    break;
-                } else {
-                    $output .= " " . $words[$i];
-                    ++$i;
+        $output = '';
+        if (!empty($text)) {
+            if (strlen($text) > $maxchar || $text == '') {
+                $words = preg_split('/\s/', $text);
+                $output = '';
+                $i = 0;
+                while (1) {
+                    $length = strlen($output) + strlen($words[$i]);
+                    if ($length > $maxchar) {
+                        break;
+                    } else {
+                        $output .= " " . $words[$i];
+                        ++$i;
+                    }
                 }
+                $output .= $end;
+            } else {
+                $output = $text;
             }
-            $output .= $end;
-        } else {
-            $output = $text;
         }
         return $output;
     }
@@ -971,8 +1059,9 @@ class db
         return $time_ago . ' ago ';
     }
 
-    function respond($item,$type,$response){
-        if(!is_null($item)) {
+    function respond($item, $type, $response)
+    {
+        if (!is_null($item)) {
             $response[$type] = $item;
         } else {
             $response['error'] = TRUE;

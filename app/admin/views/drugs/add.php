@@ -30,7 +30,7 @@ if (isset($_POST['nda_registration_no'], $_POST['license_holder'],
     $db->addDrug($drug) ? header('Location:' . BASE_PATH . 'drugs/') : $drug_add->setPageError('Please fill all fields', null, 'danger');
 }
 $db->start_session();
-$db->hasAccess($db->login_check());
+$db->hasAccess();
 //storeDrug($db)?true:null;
 !is_null($search) ? header('Location:' . CONTENT_PATH . 'drugs/?search=' . $search) : null;
 $drug_add->addScripts('jquery.steps.min.js', VENDOR . 'wizard/');

@@ -11,6 +11,12 @@ $hw_detail = new \Hda\Page\Page('Health worker details');
 $hw_detail->setHasTitle(false);
 $db = new Hda\database\db();
 
+if(isset($_GET['r'])){
+    $hwID=$_GET['r'];
+    if($db->deleteHWByID($id)){
+        header('Location: '.ADMIN_PATH.'hw/');
+    }
+}
 if (isset($_POST['type'],$_POST['award'],$_POST['school'],$_POST['started'],$_POST['ended'],$_POST['notes'])) {
     $training[0]=$id;
     $training[1]=$_POST['type'];
@@ -38,7 +44,7 @@ if(isset($_GET['act'],$_GET['itm'])){
 $hw_detail->setPageVars($db->getHwByID($id));
 $hw_detail->setPageVars2($id);
 $db->start_session();
-$db->hasAccess($db->login_check());
+$db->hasAccess();
 $hw_detail->addStyle('dropify.min.css',VENDOR.'dropify/dist/css/');
 $hw_detail->addScripts('dropify.min.js',VENDOR.'dropify/dist/js/');
 $hw_detail->addScripts('dropify.js',VENDOR.'theme/js/');

@@ -12,7 +12,7 @@ $blog_add->setHasTitle(true);
 $blog_add->setHasSetting(false);
 $db = new Hda\database\db();
 $db->start_session();
-$db->hasAccess($db->login_check());
+$db->hasAccess();
 
 if (isset($_POST['title'], $_POST['content'],
     $_POST['author'], $_POST['status'],
@@ -23,6 +23,7 @@ if (isset($_POST['title'], $_POST['content'],
     $post[3] = $_POST['status'];
     $upload = new \Hda\utils\upload(null, $_FILES['blog_pic']);
     $uploaded = $upload->startUpload();
+    $post[4]=VENDOR.'hunt/images/resource/picture.png';
     if (!empty($uploaded['name'])) {
         $post[4] = $uploaded['name'];
     }
@@ -33,7 +34,7 @@ if (isset($_POST['title'], $_POST['content'],
         $date_added = date("Y-m-d H:i:s", $d);
     }
     $post[6] = $date_added;
-    $db->addPost($post) ? header('Location:' . BASE_PATH . 'blog/') : $blog_add->setPageError('Please fill all fields', null, 'danger');
+    $db->addPost($post) ? header('Location:' . ADMIN_PATH . 'blog/') : $blog_add->setPageError('Please fill all fields', null, 'danger');
 }
 $blog_add->addStyle('dropify.min.css', VENDOR . 'dropify/dist/css/');
 $blog_add->addScripts('dropify.min.js', VENDOR . 'dropify/dist/js/');

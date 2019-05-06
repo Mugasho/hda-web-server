@@ -10,6 +10,8 @@ $db=new \Hda\database\db();
 $post=$this->getPageVars();
 $categories = $db->getPostCategories(null);
 $recents=$db->getAllPosts(5);
+$pic=!is_null($post['blog_pic'])?$post['blog_pic']:VENDOR.'hunt/images/resource/picture.png';
+$postCategory=$db->getPostCategoryByID($post['category']);
 ?>
 
 <section class="overlape">
@@ -21,7 +23,7 @@ $recents=$db->getAllPosts(5);
             <div class="row">
                 <div class="col-lg-12">
                     <div class="inner-header">
-                        <h3><?php echo $db->limitChars($this->getPageTitle(),50); ?></h3>
+                        <h3><?php echo $db->limitChars($this->getPageTitle(),70); ?></h3>
                     </div>
                 </div>
             </div>
@@ -35,8 +37,8 @@ $recents=$db->getAllPosts(5);
             <div class="row">
                 <div class="col-lg-9 column">
                     <div class="blog-single">
-                        <div class="bs-thumb"><img src="<?php echo $post['blog_pic'];?>" alt="" /></div>
-                        <ul class="post-metas"><li><a href="#" title=""><img src="images/resource/admin.jpg" alt="" />Ali TUFAN</a></li><li><a href="#" title=""><i class="la la-calendar-o"></i>November 23, 2017</a></li><li><a class="metascomment" href="#" title=""><i class="la la-comments"></i>4 comments</a></li><li><a href="#" title=""><i class="la la-file-text"></i>Travel, Skill, Jobs</a></li></ul>
+                        <div class="bs-thumb"><img src="<?php echo $pic;?>" alt="" /></div>
+                        <ul class="post-metas"><li><a href="#" title=""><img src="images/resource/admin.jpg" alt="" />Ali TUFAN</a></li><li><a href="#" title=""><i class="la la-calendar-o"></i><?php echo date("F d, Y", strtotime($post['date_added']))?></a></li><li><a class="metascomment" href="#" title=""><i class="la la-comments"></i>4 comments</a></li><li><a href="#" title=""><i class="la la-file-text"></i><?php echo $postCategory['category']?></a></li></ul>
                         <h2><?php echo $post['title'];?></h2>
                         <p><?php echo $post['content'];?></p>
                         <div class="tags-share">
@@ -58,83 +60,32 @@ $recents=$db->getAllPosts(5);
                                 <a href="#" title=""><span class="post-histext">Next Post<i>11 Tips to Help You Get New</i></span><i class="la la-arrow-right"></i></a>
                             </div>
                         </div>
-                        <div class="comment-sec">
-                            <h3>4 Comments</h3>
-                            <ul>
-                                <li>
-                                    <div class="comment">
-                                        <div class="comment-avatar"> <img src="images/resource/err1.jpg" alt="" /> </div>
-                                        <div class="comment-detail">
-                                            <h3>Ali TUFAN</h3>
-                                            <div class="date-comment"><a href="#" title=""><i class="la la-calendar-o"></i>Jan 16, 2016 07:48 am</a></div>
-                                            <p>Far much that one rank beheld bluebird after outside ignobly allegedly more when oh arrogantly vehement tantaneously eel valiantly petted this along across highhandedly much. </p>
-                                            <a href="#" title=""><i class="la la-reply"></i>Reply</a>
-                                        </div>
-                                    </div>
-                                    <ul class="comment-child">
-                                        <li>
-                                            <div class="comment">
-                                                <div class="comment-avatar"> <img src="images/resource/err2.jpg" alt="" /> </div>
-                                                <div class="comment-detail">
-                                                    <h3>Rachel LOIS</h3>
-                                                    <div class="date-comment"><a href="#" title=""><i class="la la-calendar-o"></i>Jan 16, 2016 07:48 am</a></div>
-                                                    <p>Far much that one rank beheld bluebird after outside ignobly allegedly more when oh arrogantly vehement tantaneously eel valiantly petted this along across highhandedly much. </p>
-                                                    <a href="#" title=""><i class="la la-reply"></i>Reply</a>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <div class="comment">
-                                        <div class="comment-avatar"> <img src="images/resource/err3.jpg" alt="" /> </div>
-                                        <div class="comment-detail">
-                                            <h3>Kate ROSELINE</h3>
-                                            <div class="date-comment"><a href="#" title=""><i class="la la-calendar-o"></i>Jan 16, 2016 07:48 am</a></div>
-                                            <p>Far much that one rank beheld bluebird after outside ignobly allegedly more when oh arrogantly vehement tantaneously eel valiantly petted this along across highhandedly much. </p>
-                                            <a href="#" title=""><i class="la la-reply"></i>Reply</a>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="comment">
-                                        <div class="comment-avatar"> <img src="images/resource/err4.jpg" alt="" /> </div>
-                                        <div class="comment-detail">
-                                            <h3>Luis DANIEL</h3>
-                                            <div class="date-comment"><a href="#" title=""><i class="la la-calendar-o"></i>Jan 16, 2016 07:48 am</a></div>
-                                            <p>Far much that one rank beheld bluebird after outside ignobly allegedly more when oh arrogantly vehement tantaneously eel valiantly petted this along across highhandedly much. </p>
-                                            <a href="#" title=""><i class="la la-reply"></i>Reply</a>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
                         <div class="commentform-sec">
-                            <h3>Leave a Reply</h3>
-                            <form>
+                            <h3>Leave a comment</h3>
+                            <form method="post">
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <span class="pf-title">Description</span>
                                         <div class="pf-field">
-                                            <textarea></textarea>
+                                            <textarea id="comment-description" name="comment-description"></textarea>
                                         </div>
                                     </div>
                                     <div class="col-lg-8">
                                         <span class="pf-title">Full Name</span>
                                         <div class="pf-field">
-                                            <input type="text" placeholder="ALi TUFAN" />
+                                            <input type="text" name="comment-names" id="comment-names" placeholder="Your names" />
                                         </div>
                                     </div>
                                     <div class="col-lg-8">
                                         <span class="pf-title">Email</span>
                                         <div class="pf-field">
-                                            <input type="text" placeholder="" />
+                                            <input type="text" name="comment-email" id="comment-email" placeholder="" />
                                         </div>
                                     </div>
                                     <div class="col-lg-8">
                                         <span class="pf-title">Phone</span>
                                         <div class="pf-field">
-                                            <input type="text" placeholder="" />
+                                            <input type="text" name="comment-phone" id="comment-phone" placeholder="" />
                                         </div>
                                     </div>
                                     <div class="col-lg-12">
@@ -168,10 +119,11 @@ $recents=$db->getAllPosts(5);
                         <h3>Recent Posts</h3>
                         <div class="post_widget"><?php
                             foreach ($recents as $recent){
+                                $pic=!is_null($recent['blog_pic'])?$recent['blog_pic']:VENDOR.'hunt/images/resource/picture.png';
                                 echo '<div class="mini-blog">
-                                <span><a href="#" title=""><img src="' . $recent['blog_pic'] . '" alt=""></a></span>
+                                <span><a href="#" title=""><img src="' . $pic. '" alt=""></a></span>
                                 <div class="mb-info">
-                                    <h3><a href="#" title="">' . $recent['title'] . '</a></h3>
+                                    <h3><a href="' . BASE_PATH . 'blog/' . $recent['id'] . '/" title="">' .$db->limitChars( $recent['title'],70) . '</a></h3>
                                     <span>' . date("F d, Y", strtotime($recent['date_added'])) . '</span>
                                 </div>
                             </div>';
@@ -195,19 +147,6 @@ $recents=$db->getAllPosts(5);
                             <a href="#" title=""><i class="la la-angle-right"></i>Entries RSS</a>
                             <a href="#" title=""><i class="la la-angle-right"></i>Comments RSS</a>
                             <a href="#" title=""><i class="la la-angle-right"></i>WordPress.org</a>
-                        </div>
-                    </div>
-                    <div class="widget">
-                        <h3>Our Photo</h3>
-                        <div class="photo-widget">
-                            <div class="row">
-                                <div class="col-lg-4 col-md-2 col-sm-2 col-xs-6"> <a href="#" title=""><img src="images/resource/op1.jpg" alt="" /></a> </div>
-                                <div class="col-lg-4 col-md-2 col-sm-2 col-xs-6"> <a href="#" title=""><img src="images/resource/op2.jpg" alt="" /></a> </div>
-                                <div class="col-lg-4 col-md-2 col-sm-2 col-xs-6"> <a href="#" title=""><img src="images/resource/op3.jpg" alt="" /></a> </div>
-                                <div class="col-lg-4 col-md-2 col-sm-2 col-xs-6"> <a href="#" title=""><img src="images/resource/op4.jpg" alt="" /></a> </div>
-                                <div class="col-lg-4 col-md-2 col-sm-2 col-xs-6"> <a href="#" title=""><img src="images/resource/op5.jpg" alt="" /></a> </div>
-                                <div class="col-lg-4 col-md-2 col-sm-2 col-xs-6"> <a href="#" title=""><img src="images/resource/op6.jpg" alt="" /></a> </div>
-                            </div>
                         </div>
                     </div>
                     <div class="widget">

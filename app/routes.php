@@ -20,7 +20,6 @@ $router->map('GET','/admin/facility/', 'admin/views/facility/index.php', 'facili
 $router->map('GET','/facility/', 'public/views/facility/index.php', 'front-facility');
 $router->map('GET|POST','/admin/facility/add/', 'admin/views/facility/add.php', 'add-facility');
 $router->map('GET|POST','/admin/facility/detail/[*:id]/', 'admin/views/facility/detail.php', 'facility-detail');
-$router->map('GET','/admin/facility/api/', 'admin/views/facility/api.php', 'facilityAPI');
 $router->map('GET','/admin/hw/', 'admin/views/hw/index.php', 'hw');
 $router->map('GET|POST','/hw/', 'public/views/hw/index.php', 'front-hw');
 $router->map('GET|POST','/admin/hw/add/', 'admin/views/hw/add.php', 'hw-add');
@@ -31,17 +30,23 @@ $router->map('GET','/admin/users/', 'admin/views/users/index.php', 'users');
 $router->map('GET|POST','/admin/register/', 'admin/views/users/register.php', 'register');
 $router->map('POST','/admin/users/api/[*:action]/', 'admin/views/users/api.php', 'userAPI');
 $router->map('GET|POST','/admin/login/', 'admin/views/login.php', 'login');
+$router->map('GET|POST','/admin/logout/', 'admin/views/users/logout.php', 'logout');
+
 $router->map('GET|POST','/blog/', 'public/views/blog/index.php', 'blog');
 $router->map('GET|POST','/blog/[*:id]/', 'public/views/blog/detail.php', 'blog-detail');
 $router->map('GET|POST','/admin/blog/', 'admin/views/blog/index.php', 'blog-admin');
 $router->map('GET|POST','/admin/blog/add/', 'admin/views/blog/add.php', 'blog-add');
+$router->map('GET|POST','/admin/blog/api/[*:key]/', 'admin/views/blog/api.php', 'blog-api');
+$router->map('GET|POST','/admin/blog/view/[*:key]/', 'admin/views/blog/detail.php', 'admin-view-blog');
+$router->map('GET|POST','/admin/blog/edit/[*:key]/', 'admin/views/blog/detail.php', 'admin-edit-blog');
+$router->map('GET|POST','/admin/blog/categories/', 'admin/views/blog/categories.php', 'categories');
 
 // Special (payments, ajax processing, etc)
 $router->map('GET','/charge/[*:customer_id]/','charge.php','charge');
 $router->map('GET','/pay/[*:status]/','payment_results.php','payment-results');
 
 // API Routes
-$router->map('GET','/facility/api/[*:key]/[*:id]/', 'admin/views/facility/api.php', 'facility-api');
+$router->map('GET','/admin/facility/api/[*:key]/[*:id]/', 'admin/views/facility/api.php', 'facility-api');
 $router->map('GET','/hw/api/[*:key]/[*:id]/', 'admin/views/hw/api.php', 'hw-api');
 $router->map('GET','/drugs/api/[*:key]/[*:id]/', 'admin/views/drugs/api.php', 'drugs-api');
 $router->map('GET','/admin/drugs/api/[*:key]/[*:id]/', 'admin/views/drugs/api.php', 'drugs-limit');

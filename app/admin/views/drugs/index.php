@@ -9,7 +9,7 @@
 $drugs = new Hda\Page\Page('Drugs');
 $db = new Hda\database\db();
 $db->start_session();
-$db->hasAccess($db->login_check());
+$db->hasAccess();
 $drugs->setPageContent('drugs/drugs');
 $drugs->makePage();
 

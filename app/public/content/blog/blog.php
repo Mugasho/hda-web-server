@@ -36,6 +36,7 @@ $recents=$db->getAllPosts(5);
                 <div class="col-lg-9 column">
                     <div class="bloglist-sec"><?php
                         foreach ($posts as $post) {
+                            $pic=!is_null($post['blog_pic'])?$post['blog_pic']:VENDOR.'hunt/images/resource/empty.png';
                             echo '<div class="blogpost style2">
                             <div class="blog-posthumb"> <a href="'.BASE_PATH.'blog/'.$post['id'].'/" title=""><img src="' . $post['blog_pic'] . '" alt=""></a> </div>
                             <div class="blog-postdetail">
@@ -85,10 +86,11 @@ $recents=$db->getAllPosts(5);
                         <h3>Recent Posts</h3>
                         <div class="post_widget"><?php
                             foreach ($recents as $recent){
+                                $pic=!is_null($recent['blog_pic'])?$recent['blog_pic']:VENDOR.'hunt/images/resource/empty.png';
                                echo '<div class="mini-blog">
-                                <span><a href="#" title=""><img src="' . $recent['blog_pic'] . '" alt=""></a></span>
+                                <span><a href="' . BASE_PATH . 'blog/' . $recent['id'] . '/" title=""><img src="' . $pic . '" alt=""></a></span>
                                 <div class="mb-info">
-                                    <h3><a href="#" title="">' . $recent['title'] . '</a></h3>
+                                    <h3><a href="' . BASE_PATH . 'blog/' . $recent['id'] . '/" title="">' . $recent['title'] . '</a></h3>
                                     <span>' . date("F d, Y", strtotime($recent['date_added'])) . '</span>
                                 </div>
                             </div>';
@@ -108,10 +110,9 @@ $recents=$db->getAllPosts(5);
                     <div class="widget">
                         <h3>Meta</h3>
                         <div class="sidebar-links">
-                            <a href="#" title=""><i class="la la-angle-right"></i>Log in</a>
+                            <a href="<?php echo ADMIN_PATH?>" title=""><i class="la la-angle-right"></i>Log in</a>
                             <a href="#" title=""><i class="la la-angle-right"></i>Entries RSS</a>
                             <a href="#" title=""><i class="la la-angle-right"></i>Comments RSS</a>
-                            <a href="#" title=""><i class="la la-angle-right"></i>WordPress.org</a>
                         </div>
                     </div>
                     <div class="widget">

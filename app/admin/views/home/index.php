@@ -1,4 +1,4 @@
-<?php
+/<?php
 /**
  * Created by PhpStorm.
  * User: LINCOLN
@@ -9,11 +9,10 @@
 if (!defined('BASE_PATH')) {
     exit;
 }
-
 $home = new Hda\Page\Page('Home');
 $db = new Hda\database\db();
 $db->start_session();
-$db->hasAccess($db->login_check());
+$db->hasAccess();
 $home->setPageContent('home/home');
 $PageVars['drug_count'] = $db->countDrugs(null);
 $PageVars['hw_count'] = $db->countHw(null);
